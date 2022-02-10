@@ -1,0 +1,55 @@
+cabal-version:      3.0
+name:               kaku
+version:            0.1.0.0
+synopsis:
+
+-- A longer description of the package.
+-- description:
+homepage:           https://github.com/takoeight0821/kaku
+
+-- A URL where users can report bugs.
+-- bug-reports:
+license:            BSD-3-Clause
+license-file:       LICENSE
+author:             Yuya Kono
+maintainer:         takohati0821@gmail.com
+
+-- A copyright notice.
+-- copyright:
+category:           Language
+extra-source-files:
+  CHANGELOG.md
+  README.md
+
+common shared-properties
+  build-depends:
+    , base    ^>=4.14.3.0
+    , relude
+
+  default-language: Haskell2010
+  ghc-options:
+    -Wall -Wcompat -Wincomplete-uni-patterns
+    -Wincomplete-record-updates -Wmissing-import-lists
+
+library
+  import:          shared-properties
+  mixins:
+    base hiding (Prelude),
+    relude (Relude as Prelude),
+    relude
+
+  -- cabal-fmt: expand src
+  exposed-modules: MyLib
+  hs-source-dirs:  src
+
+executable kaku
+  import:         shared-properties
+  main-is:        Main.hs
+  build-depends:  kaku
+  hs-source-dirs: app
+
+test-suite kaku-test
+  import:         shared-properties
+  type:           exitcode-stdio-1.0
+  hs-source-dirs: test
+  main-is:        MyLibTest.hs

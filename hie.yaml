@@ -1,0 +1,10 @@
+cradle:
+  cabal:
+    - path: "src"
+      component: "lib:kaku"
+
+    - path: "app/Main.hs"
+      component: "kaku:exe:kaku"
+
+    - path: "test"
+      component: "kaku:test:kaku-test"
