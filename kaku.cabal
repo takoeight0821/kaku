@@ -23,7 +23,8 @@ extra-source-files:
 
 common shared-properties
   build-depends:
-    , base    ^>=4.14.3.0
+    , base           ^>=4.14.3.0
+    , prettyprinter
     , relude
 
   default-language: Haskell2010
@@ -39,7 +40,10 @@ library
     relude
 
   -- cabal-fmt: expand src
-  exposed-modules: MyLib
+  exposed-modules:
+    Kaku.Outputable
+    Kaku.Syntax
+
   hs-source-dirs:  src
 
 executable kaku
