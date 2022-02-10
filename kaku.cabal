@@ -49,7 +49,12 @@ executable kaku
   hs-source-dirs: app
 
 test-suite kaku-test
-  import:         shared-properties
-  type:           exitcode-stdio-1.0
-  hs-source-dirs: test
-  main-is:        MyLibTest.hs
+  import:             shared-properties
+  type:               exitcode-stdio-1.0
+  build-depends:
+    , hspec  ^>=2.9.4
+    , kaku
+
+  build-tool-depends: hspec-discover:hspec-discover -any
+  hs-source-dirs:     test
+  main-is:            MyLibTest.hs
