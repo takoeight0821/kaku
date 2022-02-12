@@ -2,13 +2,19 @@ module Kaku.Outputable where
 
 import Prettyprinter (Doc, parens)
 
-type Level = Int
+type St = State Int
 
 class Outputable a where
-  ppr :: Level -> a -> Doc ann
+  ppr :: a -> St (Doc ann)
+
+fresh :: Text -> St Text
+fresh x = do
+  n <- get
+  put (n + 1)
+  pure $ x <> show n
 
 viaOutputable :: Outputable a => a -> Doc ann
-viaOutputable = ppr 0
+viaOutputable x = evalState (ppr x) 0
 
 maybeParens :: Bool -> Doc ann -> Doc ann
 maybeParens True = parens
