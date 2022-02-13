@@ -5,13 +5,13 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
-{-# OPTIONS_GHC -Wno-missing-import-lists #-}
 {-# OPTIONS_GHC -Wno-name-shadowing #-}
 
 module Kaku.NbE where
 
 import Control.Monad (ap)
 import Kaku.GExp (GExp (..), GPrim (..), PTypeRep (..), PrimTy (..), RTypeRep (..))
+import qualified Kaku.GExp as G
 
 type Exp a = GExp Reifiable a
 
@@ -143,21 +143,21 @@ evalPrim (Rec n f a) =
       <*> pure (eval a)
 
 eval :: forall a. Reifiable a => Exp a -> Sem a
-eval (Var s) = reflect @a (NVar s)
-eval Unit = ()
-eval (Lift x) = drown x
-eval (Prim p) = evalPrim p
-eval (Lam f) = (eval . f . quote, NLam (reify . eval . f))
-eval (App f e) = fst (eval f) (eval e)
-eval (Pair e e') =
+eval (G.Var s) = reflect @a (NVar s)
+eval G.Unit = ()
+eval (G.Lift x) = drown x
+eval (G.Prim p) = evalPrim p
+eval (G.Lam f) = (eval . f . quote, NLam (reify . eval . f))
+eval (G.App f e) = fst (eval f) (eval e)
+eval (G.Pair e e') =
   let x = eval e
       y = eval e'
    in ((x, y), NPair (reify x) (reify y))
-eval (Fst e) = fst . fst . eval $ e
-eval (Snd e) = snd . fst . eval $ e
-eval (Inl e) = let x = eval e in (Leaf (Left x), NInl (reify x))
-eval (Inr e) = let x = eval e in (Leaf (Right x), NInr (reify x))
-eval (Case e f g) =
+eval (G.Fst e) = fst . fst . eval $ e
+eval (G.Snd e) = snd . fst . eval $ e
+eval (G.Inl e) = let x = eval e in (Leaf (Left x), NInl (reify x))
+eval (G.Inr e) = let x = eval e in (Leaf (Right x), NInr (reify x))
+eval (G.Case e f g) =
   let (x, _) = eval e
       (f', _) = eval f
       (g', _) = eval g
@@ -247,20 +247,20 @@ instance Applicative MDec where
 
 instance Monad MDec where
   (Leaf x) >>= f = f x
-  (SCase n g h) >>= f = SCase n ((=<<) f . g) ((=<<) f . h)
+  (SCase n g h) >>= f = SCase n (f <=< g) (f <=< h)
 
 -- * Examples
 
-funNoEta :: Exp (Text -> Text)
+funNoEta :: Reifiable a => Exp (a -> a)
 funNoEta = Var "x"
 
-funBeta :: Exp (Text -> Text)
+funBeta :: Reifiable a => Exp (a -> a)
 funBeta = App (Lam id) funNoEta
 
-sumNoEta :: Exp (Either Text Text)
+sumNoEta :: Reifiable a => Exp (Either a a)
 sumNoEta = Var "x"
 
-sumComm :: Exp (Either Text Text -> Text)
+sumComm :: Reifiable a => Exp (Either a a -> a)
 sumComm = Lam $ \s ->
   Fst
     ( Case
