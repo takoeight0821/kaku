@@ -7,7 +7,7 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# OPTIONS_GHC -Wno-name-shadowing #-}
 
-module Kaku.NbE where
+module Kaku.Nbe where
 
 import Control.Monad (ap)
 import Kaku.GExp (GExp (..), GPrim (..), PTypeRep (..), PrimTy (..), RTypeRep (..))
@@ -251,16 +251,16 @@ instance Monad MDec where
 
 -- * Examples
 
-funNoEta :: Reifiable a => Exp (a -> a)
+funNoEta :: Exp (Int -> Int)
 funNoEta = Var "x"
 
-funBeta :: Reifiable a => Exp (a -> a)
+funBeta :: Exp (Int -> Int)
 funBeta = App (Lam id) funNoEta
 
-sumNoEta :: Reifiable a => Exp (Either a a)
+sumNoEta :: Exp (Either Text Text)
 sumNoEta = Var "x"
 
-sumComm :: Reifiable a => Exp (Either a a -> a)
+sumComm :: Exp (Either Text Text -> Text)
 sumComm = Lam $ \s ->
   Fst
     ( Case

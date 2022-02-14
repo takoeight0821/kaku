@@ -42,7 +42,8 @@ library
   -- cabal-fmt: expand src
   exposed-modules:
     Kaku.GExp
-    Kaku.NbE
+    Kaku.Nbe
+    Kaku.NbeEta
     Kaku.Outputable
 
   hs-source-dirs:  src
